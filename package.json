@@ -1,0 +1,10 @@
+{
+  "name": "pop-shop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "二手泡泡马特展示站（店铺页 + 密码保护的管理页）",
+  "dependencies": {
+    "@vercel/blob": "^1.0.0"
+  }
+}

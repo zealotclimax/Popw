@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>闲置盲盒屋 · 二手泡泡马特</title>
+<style>
+:root{--bg:#fff8f1;--card:#ffffff;--ink:#2b2433;--sub:#7a7085;--line:#f0e3d6;--pri:#ff5d8f;--pri-ink:#ffffff;--chip:#ffe9f0;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1720;--card:#26212d;--ink:#f4eef8;--sub:#a99fb4;--line:#3a3344;--pri:#ff7aa5;--pri-ink:#2b1020;--chip:#3b2431;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1720;--card:#26212d;--ink:#f4eef8;--sub:#a99fb4;--line:#3a3344;--pri:#ff7aa5;--pri-ink:#2b1020;--chip:#3b2431;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+a{color:var(--pri)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+[hidden]{display:none!important}
+header{padding:36px 0 18px;text-align:center}
+header h1{margin:0;font-size:clamp(26px,5vw,38px)}
+header h1 span{color:var(--pri)}
+header p{margin:8px 0 0;color:var(--sub)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.tools input,.tools select{flex:1 1 160px;width:auto}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:99px;cursor:pointer;font:inherit}
+.chip.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.count{color:var(--sub);font-size:14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer}
+.pic{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;left:10px;top:10px;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--card);color:var(--ink)}
+.sold{position:absolute;inset:0;background:rgba(0,0,0,.45);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700}
+.info{padding:12px}
+.info h3{margin:0;font-size:15px}
+.info small{color:var(--sub)}
+.price{margin-top:6px;color:var(--pri);font-weight:700;font-size:18px}
+.empty{text-align:center;color:var(--sub);padding:40px 0}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.mask.show{display:flex}
+.modal{background:var(--card);border-radius:20px;max-width:460px;width:100%;max-height:90%;overflow:auto}
+.modal .pic{font-size:96px}
+.thumbs{display:flex;gap:6px;padding:8px 18px 0;overflow-x:auto}
+.thumbs img{width:52px;height:52px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent}
+.thumbs img.on{border-color:var(--pri)}
+.body{padding:12px 18px 20px}
+.body h2{margin:0 0 4px}
+.rows{margin:12px 0;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rows span:first-child{color:var(--sub)}
+.contact{background:var(--chip);border-radius:12px;padding:12px;font-size:14px}
+.btn{display:inline-block;border:0;border-radius:12px;background:var(--pri);color:var(--pri-ink);font:inherit;padding:9px 16px;cursor:pointer;text-align:center}
+.btn.sm{padding:6px 12px;font-size:14px}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.close{margin-top:12px;width:100%}
+footer{text-align:center;color:var(--sub);font-size:13px;padding:30px 0 40px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:31;background:var(--bg);display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
+.bar #st{flex:1;color:var(--sub);font-size:14px}
+.lb{display:block;margin:14px 0;font-size:14px;color:var(--sub)}
+.arow{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.f label{font-size:12px;color:var(--sub)}
+.aimgs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 8px;align-items:center}
+.th{position:relative;width:70px;height:70px;border-radius:10px;overflow:hidden}
+.th img{width:100%;height:100%;object-fit:cover}
+.th button{position:absolute;right:2px;top:2px;border:0;border-radius:50%;width:22px;height:22px;background:rgba(0,0,0,.65);color:#fff;cursor:pointer}
+.acts{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px;font-size:14px}
+.tip{color:var(--sub);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div id="shop">
+<header><h1>闲置<span>盲盒</span>屋</h1><p>二手泡泡马特 · 只展示、不支付，看中请私信联系</p></header>
+<div class="tools">
+<input id="q" type="search" placeholder="搜索名称或系列…">
+<select id="cond"></select>
+<select id="sort"><option value="new">最新上架</option><option value="asc">价格从低到高</option><option value="desc">价格从高到低</option></select>
+</div>
+<div class="chips" id="chips"></div>
+<div class="count" id="count"></div>
+<div class="grid" id="grid"></div>
+<footer>本站不提供在线支付，交易请自行沟通 · <a href="#admin">店主入口</a></footer>
+</div>
+<div id="adm" hidden></div>
+</div>
+<div class="mask" id="mask"><div class="modal" id="modal"></div></div>
+
+<script>
+var DATA={v:1,contact:"",items:[]},PW=sessionStorage.getItem("pw")||"";
+async function api(u,b,t){var r=await fetch(u,{method:"POST",headers:{"content-type":t,"x-admin-password":PW},body:b});var j=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(j.error||r.status);return j}
+var COND=["全新未拆","已拆未摆","轻微使用","无盒/散货"];
+var PAL=[["#ffd1dc","#ffb3c8"],["#d6f0e0","#a9e2c4"],["#e0d4f7","#c3adef"],["#cfe6ff","#9fcbff"],["#ffe3c4","#ffc98f"],["#c9f0f2","#8fdde2"]];
+var S={series:"全部",q:"",cond:"",sort:"new"},CAN,DIRTY=false,MSG="";
+var $=function(s){return document.querySelector(s)};
+function esc(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function pic(it,extra,k){
+  if(it.imgs&&it.imgs.length)return '<div class="pic"><img src="'+it.imgs[k||0]+'" alt="">'+(extra||"")+'</div>';
+  var p=PAL[it.id%PAL.length];
+  return '<div class="pic" style="background:linear-gradient(135deg,'+p[0]+','+p[1]+')">🧸'+(extra||"")+'</div>';
+}
+/* ===== 店铺页 ===== */
+function chips(){
+  var l=["全部"];DATA.items.forEach(function(i){if(i.series&&l.indexOf(i.series)<0)l.push(i.series)});
+  $("#chips").innerHTML=l.map(function(s){return '<button class="chip'+(s===S.series?' on':'')+'" data-s="'+esc(s)+'">'+esc(s)+'</button>'}).join("");
+}
+function shop(){
+  chips();
+  var q=S.q.trim().toLowerCase();
+  var r=DATA.items.filter(function(i){return (S.series==="全部"||i.series===S.series)&&(!S.cond||i.cond===S.cond)&&(!q||(i.name+i.series).toLowerCase().indexOf(q)>=0)});
+  if(S.sort==="asc")r.sort(function(a,b){return a.price-b.price});
+  else if(S.sort==="desc")r.sort(function(a,b){return b.price-a.price});
+  else r.sort(function(a,b){return b.id-a.id});
+  $("#count").textContent="共 "+r.length+" 件商品";
+  $("#grid").innerHTML=r.length?r.map(function(i){
+    return '<div class="card" data-id="'+i.id+'">'+pic(i,'<span class="tag">'+esc(i.cond)+'</span>'+(i.sold?'<div class="sold">已售出</div>':''))+
+    '<div class="info"><h3>'+esc(i.name)+'</h3><small>'+esc(i.series)+'</small><div class="price">¥'+esc(i.price)+'</div></div></div>';
+  }).join(""):'<div class="empty" style="grid-column:1/-1">暂时没有商品～</div>';
+}
+function detail(id,k){
+  var i=DATA.items.filter(function(x){return x.id===id})[0];if(!i)return;
+  k=k||0;
+  var th=(i.imgs&&i.imgs.length>1)?'<div class="thumbs">'+i.imgs.map(function(g,n){return '<img src="'+g+'" data-id="'+id+'" data-k="'+n+'" class="'+(n===k?'on':'')+'" alt="">'}).join("")+'</div>':"";
+  $("#modal").innerHTML=pic(i,"",k)+th+'<div class="body"><h2>'+esc(i.name)+'</h2><div class="price">¥'+esc(i.price)+(i.sold?' · 已售出':'')+'</div>'+
+  '<div class="rows"><div><span>系列</span><span>'+esc(i.series)+'</span></div><div><span>成色</span><span>'+esc(i.cond)+'</span></div><div><span>配件</span><span>'+esc(i.box)+'</span></div></div>'+
+  '<p>'+esc(i.note)+'</p><div class="contact">想要这件？请联系卖家：<br><b>'+esc(DATA.contact)+'</b><br>请发送商品名称，线下沟通交易。</div><button class="btn close" id="x">关闭</button></div>';
+  $("#mask").classList.add("show");
+}
+$("#cond").innerHTML='<option value="">全部成色</option>'+COND.map(function(c){return '<option>'+c+'</option>'}).join("");
+$("#chips").addEventListener("click",function(e){var s=e.target.getAttribute("data-s");if(s){S.series=s;shop()}});
+$("#grid").addEventListener("click",function(e){var c=e.target.closest(".card");if(c)detail(+c.getAttribute("data-id"))});
+$("#modal").addEventListener("click",function(e){
+  if(e.target.id==="x")$("#mask").classList.remove("show");
+  else if(e.target.getAttribute("data-k")!=null&&e.target.tagName==="IMG")detail(+e.target.getAttribute("data-id"),+e.target.getAttribute("data-k"));
+});
+$("#mask").addEventListener("click",function(e){if(e.target.id==="mask")$("#mask").classList.remove("show")});
+$("#q").addEventListener("input",function(e){S.q=e.target.value;shop()});
+$("#cond").addEventListener("change",function(e){S.cond=e.target.value;shop()});
+$("#sort").addEventListener("change",function(e){S.sort=e.target.value;shop()});
+
+/* ===== 管理页 ===== */
+function row(it){
+  return '<div class="arow" data-id="'+it.id+'"><div class="f">'+
+  '<div style="grid-column:1/-1"><label>名称<input data-f="name" value="'+esc(it.name)+'"></label></div>'+
+  '<label>价格（元）<input data-f="price" type="number" min="0" value="'+esc(it.price)+'"></label>'+
+  '<label>系列<input data-f="series" value="'+esc(it.series)+'"></label>'+
+  '<label>成色<select data-f="cond">'+COND.map(function(c){return '<option'+(c===it.cond?' selected':'')+'>'+c+'</option>'}).join("")+'</select></label>'+
+  '<label>配件<input data-f="box" value="'+esc(it.box)+'"></label>'+
+  '<div style="grid-column:1/-1"><label>备注<input data-f="note" value="'+esc(it.note)+'"></label></div></div>'+
+  '<div class="aimgs">'+(it.imgs||[]).map(function(g,k){return '<div class="th"><img src="'+g+'" alt=""><button data-act="rm" data-k="'+k+'">×</button></div>'}).join("")+
+  '<label class="btn ghost sm">＋ 上传图片<input type="file" accept="image/*" multiple hidden data-act="up"></label></div>'+
+  '<div class="acts"><label><input type="checkbox" data-f="sold" style="width:auto"'+(it.sold?' checked':'')+'> 已售出</label><button class="btn ghost sm" data-act="del">删除商品</button></div></div>';
+}
+function stat(){var s=$("#st");if(s)s.textContent=MSG||(DIRTY?"有未发布的修改":"已是最新")}
+function admin(){
+  var a=$("#adm");
+  if(!CAN){a.innerHTML='<div class="empty">店主登录<br><br><input id="pw" type="password" placeholder="管理密码" style="max-width:240px"> <button class="btn" data-act="login">登录</button><p id="st"></p><a href="#">返回店铺</a></div>';return}
+  a.innerHTML='<div class="bar"><b>管理后台</b><span id="st"></span><button class="btn" data-act="save">发布更新</button><a href="#">查看店铺</a></div>'+
+  '<label class="lb">联系方式（买家在商品详情里看到）<input id="ct" value="'+esc(DATA.contact)+'"></label>'+
+  DATA.items.slice().sort(function(x,y){return y.id-x.id}).map(row).join("")+
+  '<button class="btn" data-act="add">＋ 新增商品</button> <button class="btn ghost" data-act="exp">导出备份</button> <label class="btn ghost">导入备份<input type="file" accept=".json" hidden data-act="imp"></label><p class="tip">修改价格、文字、图片后，点右上角“发布更新”，买家才会看到变化。</p>';
+  stat();
+}
+function item(el){var r=el.closest(".arow");return r&&DATA.items.filter(function(x){return x.id===+r.getAttribute("data-id")})[0]}
+function dirty(){DIRTY=true;MSG="";stat()}
+function shrink(file){return new Promise(function(res,rej){
+  var fr=new FileReader();
+  fr.onload=function(){var im=new Image();im.onload=function(){
+    var s=Math.min(1,1200/Math.max(im.width,im.height)),c=document.createElement("canvas");
+    c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    c.toBlob(function(b){b?res(b):rej(new Error("压缩失败"))},"image/jpeg",.82)};
+    im.onerror=function(){rej(new Error("无法读取图片"))};im.src=fr.result};
+  fr.onerror=rej;fr.readAsDataURL(file)})}
+async function upload(it,files){
+  try{
+    for(var n=0;n<files.length;n++){MSG="上传中 "+(n+1)+"/"+files.length+"…";stat();
+      var r=await api("/api/upload",await shrink(files[n]),"image/jpeg");it.imgs=(it.imgs||[]).concat([r.url])}
+    DIRTY=true;MSG="";admin();
+  }catch(e){MSG="上传失败："+(e&&e.message||e);stat()}
+}
+async function save(){MSG="发布中…";stat();try{await api("/api/save",JSON.stringify(DATA),"application/json");DIRTY=false;MSG="已发布 ✓"}catch(e){MSG="发布失败："+e.message}stat()}
+async function login(){PW=$("#pw").value;try{await api("/api/auth","","text/plain");sessionStorage.setItem("pw",PW);CAN=true;MSG="";admin()}catch(e){PW="";MSG="密码不正确";stat()}}
+function exp(){var a=document.createElement("a");a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(DATA,null,1));a.download="popmart-backup-"+new Date().toISOString().slice(0,10)+".json";a.click()}
+function imp(f){var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);if(!Array.isArray(d.items))throw 0;DATA=d;DIRTY=true;MSG="";admin()}catch(e){MSG="备份文件无效";stat()}};r.readAsText(f)}
+$("#adm").addEventListener("input",function(e){
+  var t=e.target;
+  if(t.id==="ct"){DATA.contact=t.value;dirty();return}
+  var f=t.getAttribute("data-f"),it=item(t);if(!f||!it)return;
+  it[f]=t.type==="checkbox"?t.checked:(f==="price"?(t.value===""?0:+t.value):t.value);dirty();
+});
+$("#adm").addEventListener("change",function(e){
+  var t=e.target;
+  if(t.getAttribute("data-act")==="up"&&t.files.length){upload(item(t),Array.prototype.slice.call(t.files))}
+  else if(t.getAttribute("data-act")==="imp"&&t.files.length){imp(t.files[0])}
+  else if(t.tagName==="SELECT"){var it=item(t);if(it){it.cond=t.value;dirty()}}
+});
+$("#adm").addEventListener("click",function(e){
+  var b=e.target.closest("[data-act]");if(!b||b.tagName==="INPUT")return;
+  var a=b.getAttribute("data-act"),it=item(b);
+  if(a==="save")save();
+  else if(a==="login")login();
+  else if(a==="exp")exp();
+  else if(a==="add"){var id=DATA.items.reduce(function(m,x){return Math.max(m,x.id)},0)+1;DATA.items.push({id:id,name:"新商品",series:"",cond:COND[0],price:0,box:"",note:"",sold:false,imgs:[]});DIRTY=true;MSG="";admin()}
+  else if(a==="del"&&it&&confirm("确定删除“"+it.name+"”？")){DATA.items=DATA.items.filter(function(x){return x!==it});DIRTY=true;MSG="";admin()}
+  else if(a==="rm"&&it){it.imgs.splice(+b.getAttribute("data-k"),1);DIRTY=true;MSG="";admin()}
+});
+window.addEventListener("beforeunload",function(e){if(DIRTY){e.preventDefault();e.returnValue=""}});
+
+/* ===== 路由与身份 ===== */
+function route(){var ad=location.hash==="#admin";$("#shop").hidden=ad;$("#adm").hidden=!ad;if(ad)admin();else shop()}
+window.addEventListener("hashchange",route);
+route();
+fetch("/api/items").then(function(r){return r.json()}).then(function(d){DATA=d;route()}).catch(function(){$("#count").textContent="加载失败，请刷新"});
+if(PW)api("/api/auth","","text/plain").then(function(){CAN=true;if(location.hash==="#admin")admin()}).catch(function(){PW=""});
+</script>
+</body>
+</html>
