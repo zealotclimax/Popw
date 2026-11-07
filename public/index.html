@@ -143,10 +143,11 @@ var $=function(s){return document.querySelector(s)};
 function esc(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 
 /* ===== 双语 ===== */
-var I={en:{brand:"Blind Box House",nav:"Pre-owned pop mart",crumb:"Home / pop mart",sub:"Pre-owned Pop Mart · blind boxes, figures & pendants",search:"Search name or series…",min:"Min $",max:"Max $",sortNew:"Newest first",sortAsc:"Price: low to high",sortDesc:"Price: high to low",avAll:"All status",avIn:"Available",avOut:"Sold",condAll:"All conditions",all:"All",count:"{n} items",loadFail:"Failed to load items. Please refresh the page.",empty:"No items match your filters.",isNew:"NEW",sold:"SOLD",series:"Series",cond:"Condition",box:"Includes",want:"Interested? Contact the seller:",ask:"Please mention the item name; the deal is arranged directly.",cp:"Copy",copied:"Copied: ",close:"Close",about:"A small showcase of pre-owned Pop Mart collectibles, with real photos and condition notes.",fcontact:"Contact",notice:"How to buy",n1:"This site is a showcase only; online payment is not available.",n2:"Message the seller with the item name to arrange the deal.",legal:"© Blind Box House · Not affiliated with Pop Mart. All items are personal pre-owned collectibles."},
-zh:{brand:"闲置盲盒屋",nav:"二手 pop mart",crumb:"首页 / pop mart",sub:"二手泡泡马特 · 盲盒、手办、挂件",search:"搜索名称或系列…",min:"最低价 $",max:"最高价 $",sortNew:"最新上架",sortAsc:"价格从低到高",sortDesc:"价格从高到低",avAll:"全部状态",avIn:"在售",avOut:"已售出",condAll:"全部成色",all:"全部",count:"共 {n} 件商品",loadFail:"商品加载失败，请刷新页面。",empty:"暂时没有符合条件的商品～",isNew:"新上架",sold:"已售出",series:"系列",cond:"成色",box:"配件",want:"想要这件？请联系卖家：",ask:"请告知商品名称，线下沟通交易。",cp:"复制",copied:"已复制：",close:"关闭",about:"二手泡泡马特展示站，每件都有实物图和成色说明。",fcontact:"联系方式",notice:"购买须知",n1:"本站只展示商品，不提供在线支付。",n2:"看中请联系卖家，告知商品名称后沟通。",legal:"© 闲置盲盒屋 · 与泡泡马特官方无关联，商品均为个人闲置转让"}};
+var I={en:{brand:"Blind Box House",nav:"Pre-owned pop mart",crumb:"Home / pop mart",sub:"Pre-owned Pop Mart · blind boxes, figures & pendants",search:"Search name or series…",min:"Min $",max:"Max $",sortNew:"Newest first",sortAsc:"Price: low to high",sortDesc:"Price: high to low",avAll:"All status",avIn:"Available",avOut:"Sold",condAll:"All conditions",all:"All",count:"{n} items",loadFail:"Failed to load items. Please refresh the page.",empty:"No items match your filters.",isNew:"NEW",sold:"SOLD",series:"Series",cond:"Condition",box:"Includes",want:"Interested? Contact the seller:",ask:"Please mention the item name; the deal is arranged directly.",cp:"Copy",copied:"Copied: ",close:"Close",about:"A small showcase of pre-owned Pop Mart collectibles, with real photos and condition notes.",fcontact:"Contact",notice:"How to buy",n1:"This site is a showcase only; online payment is not available.",n2:"Message the seller with the item name to arrange the deal.",legal:"© {b} · Not affiliated with Pop Mart. All items are personal pre-owned collectibles."},
+zh:{brand:"闲置盲盒屋",nav:"二手 pop mart",crumb:"首页 / pop mart",sub:"二手泡泡马特 · 盲盒、手办、挂件",search:"搜索名称或系列…",min:"最低价 $",max:"最高价 $",sortNew:"最新上架",sortAsc:"价格从低到高",sortDesc:"价格从高到低",avAll:"全部状态",avIn:"在售",avOut:"已售出",condAll:"全部成色",all:"全部",count:"共 {n} 件商品",loadFail:"商品加载失败，请刷新页面。",empty:"暂时没有符合条件的商品～",isNew:"新上架",sold:"已售出",series:"系列",cond:"成色",box:"配件",want:"想要这件？请联系卖家：",ask:"请告知商品名称，线下沟通交易。",cp:"复制",copied:"已复制：",close:"关闭",about:"二手泡泡马特展示站，每件都有实物图和成色说明。",fcontact:"联系方式",notice:"购买须知",n1:"本站只展示商品，不提供在线支付。",n2:"看中请联系卖家，告知商品名称后沟通。",legal:"© {b} · 与泡泡马特官方无关联，商品均为个人闲置转让"}};
 var LANG="en";try{if(localStorage.getItem("lang")==="zh")LANG="zh"}catch(e){}
-function t(k){return(I[LANG]&&I[LANG][k])||I.en[k]||k}
+function brand(){var n=DATA.siteName&&DATA.siteName[LANG];return n&&n.trim()?n.trim():I[LANG].brand}
+function t(k){if(k==="brand")return brand();var v=(I[LANG]&&I[LANG][k])||I.en[k]||k;return k==="legal"?v.replace("{b}",brand()):v}
 function cl(c){return LANG==="zh"?c:(COND_EN[COND.indexOf(c)]||c)}
 function pick(i,f){return LANG==="en"&&i[f+"En"]?i[f+"En"]:i[f]}
 function fill(sel,arr,v){$(sel).innerHTML=arr.map(function(a){return '<option value="'+a[0]+'">'+t(a[1])+'</option>'}).join("");$(sel).value=v}
@@ -272,6 +273,7 @@ function admin(){
   if(!CAN){a.innerHTML='<div class="lg">店主登录<br><br><input id="pw" type="password" placeholder="管理密码"> <button class="btn" data-act="login">登录</button><p id="st"></p><a href="#">返回店铺</a></div>';stat();return}
   var c=DATA.contacts||{};
   a.innerHTML='<div class="bar"><b>管理后台</b><span id="st"></span><button class="btn" data-act="save">发布更新</button><a href="#">查看店铺</a></div><div class="hl" id="hl">系统自检中…</div>'+
+  '<div class="arow"><div class="sec">网站名称（显示在浏览器标题、页面顶部和页脚；留空则使用默认名称）</div><div class="f"><label>中文名称<input data-sn="zh" value="'+esc((DATA.siteName||{}).zh||"")+'" placeholder="闲置盲盒屋"></label><label>English name<input data-sn="en" value="'+esc((DATA.siteName||{}).en||"")+'" placeholder="Blind Box House"></label></div></div>'+
   '<div class="arow"><div class="sec">联系方式（显示在网站顶部、页脚和商品详情；留空的不显示）</div><div class="f">'+
   CT.map(function(x){return '<label>'+x[2]+'<input data-ct="'+x[0]+'" value="'+esc(c[x[0]]||"")+'" placeholder="'+(x[0]==="instagram"?"@yourname":(x[0]==="phone"?"+61 …":""))+'"></label>'}).join("")+'</div></div>'+
   DATA.items.slice().sort(function(x,y){return y.id-x.id}).map(row).join("")+
@@ -326,6 +328,7 @@ function imp(f){var r=new FileReader();r.onload=function(){try{var d=JSON.parse(
 $("#adm").addEventListener("input",function(e){
   var x=e.target,ck=x.getAttribute("data-ct");
   if(ck){DATA.contacts=DATA.contacts||{};DATA.contacts[ck]=x.value;dirty();return}
+  var sn=x.getAttribute("data-sn");if(sn){DATA.siteName=DATA.siteName||{};DATA.siteName[sn]=x.value;dirty();return}
   var f=x.getAttribute("data-f"),it=item(x);if(!f||!it)return;
   it[f]=x.type==="checkbox"?x.checked:(f==="price"?(x.value===""?0:+x.value):x.value);dirty();
 });
@@ -352,7 +355,7 @@ window.addEventListener("beforeunload",function(e){if(DIRTY){e.preventDefault();
 function route(){var ad=location.hash==="#admin";$("#shop").hidden=ad;$("#adm").hidden=!ad;if(ad)admin();else shop()}
 window.addEventListener("hashchange",route);
 applyLang();route();
-fetch("/api/items").then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){DATA=d;if(!DATA.contacts)DATA.contacts=DEFC;contacts();route()}).catch(function(e){console.error(e);window.LOADERR=true;route()});
+fetch("/api/items").then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){DATA=d;if(!DATA.contacts)DATA.contacts=DEFC;applyLang();route()}).catch(function(e){console.error(e);window.LOADERR=true;route()});
 if(PW)api("/api/auth","","text/plain").then(function(){CAN=true;if(location.hash==="#admin")admin()}).catch(function(){PW=""});
 </script>
 </body>
